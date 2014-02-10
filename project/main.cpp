@@ -35,32 +35,32 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
     // Loads Table 1 file to build nodes with data
     if (dataAction == "buildNodes")
     {
-	inputFile.open("dist_to_iron_hills.txt");
+		inputFile.open("dist_to_iron_hills.txt");
 	
-	while ( getline(inputFile, data) )
-	{
-	    constructedLine = "";
-	    for (int i = 0; i < data.size(); i++)
-	    {
-			if (data[i] != '-')
-				constructedLine += data[i];
-			else
+		while ( getline(inputFile, data) )
+		{
+			constructedLine = "";
+			for (int i = 0; i < data.size(); i++)
 			{
-				if (constructedLine != "")
+				if (data[i] != '-')
+					constructedLine += data[i];
+				else
 				{
-					lineParts.push_back(constructedLine);
-					constructedLine = "";
+					if (constructedLine != "")
+					{
+						lineParts.push_back(constructedLine);
+						constructedLine = "";
+					}
 				}
 			}
-	    }
-	    lineParts.push_back(constructedLine); // Adds distance value from Table 1
+			lineParts.push_back(constructedLine); // Adds distance value from Table 1
 	    
-	    name = lineParts[0];
-	    value = atof(lineParts[1].c_str());
+			name = lineParts[0];
+			value = atof(lineParts[1].c_str());
 
-	    // Build nodes here
-	    buildNode(name, value, graph);
-	}	
+			// Build nodes here
+			buildNode(name, value, graph);
+		}	
 	
 	
     }
@@ -79,14 +79,14 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 			if ( data.find(':') != string::npos )
 			{
 				constructedLine = "";
-			for (int i = 0; i < data.size(); i++)
-			{
-				// Get name, take away the colon
+				for (int i = 0; i < data.size(); i++)
+				{
+					// Get name, take away the colon
 		    
-			}
+				}
 
-			// DEBUG
-			cout << "Found :" << endl;
+				// DEBUG
+				cout << "Found :" << endl;
 			}	
 			// See if line contains a - to see if it's a node path
 			else if ( data.find('-') != string::npos )
