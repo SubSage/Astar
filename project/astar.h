@@ -10,71 +10,67 @@ class astar
 public:
 	astar()
 	{
-		graph;
 	}
 
-	vector<string> findPath(weightedGraph graph, string start, string end){
-		set<string> closedSet;
-		set<string> openSet;
-		openSet.insert(start);
+	//Returns vertex with smallest F in a set
+	weightedGraph::Vertex* getSmallestFScoreVertex(set<weightedGraph::Vertex*> s){
+		weightedGraph::Vertex* x;
+		for (set<weightedGraph::Vertex*>::iterator i = s.begin(); i != s.end(); i++) {
+			if((*i)->f < x->f)
+				x = *i;
+		}
+		return x;
+	}
+
+	vector<weightedGraph::Vertex*> findPath(weightedGraph graph, string start, string end){
+		set<weightedGraph::Vertex*> closedSet;
+		set<weightedGraph::Vertex*> openSet;
+		openSet.insert(graph.findVertex(start));
 
 
+		while(!openSet.empty()){
+			
+			weightedGraph::Vertex* current;
+			current = getSmallestFScoreVertex(openSet);
 
+			if(current->locationName==end)
+				return finishUp(current);
+
+			openSet.erase(current);
+			closedSet.insert(current);
+			
+			for each(weightedGraph::Vertex* v in current->getNeighbors()){
+				if(closedSet.count(v)!=0){
+					continue;
+				}
+				float temp=current->g + v->h;
+
+				if(openSet.count(v)==0 || temp < v->g){
+					v->parent=current;
+					v->g=temp;
+					v->f=v->h+v->g;
+
+					if(openSet.count(v)==0){
+						openSet.insert(v);
+					}
+				}
+			}
+			cout<<"no path";
+			return;
+		}
+	}
+
+	//Given a vertex with each parent pointing up, returns vector with full path from start to goal
+	vector<weightedGraph::Vertex*> finishUp(weightedGraph::Vertex* s){
+		vector<weightedGraph::Vertex*> pp;
+		while(s->parent!=NULL){
+			pp.push_back(s);
+			s=s->parent;
+		}
+		pp.push_back(s);
+		return pp;
+		//Rant....c++ seems dumb sometimes, why wasn't I able to insert s to p? I just don't get it...maybe I do.
+		//Seems like they leave things like that for programmers to be efficient. Such as there being no contains method
+		//because then one would invoke get method thus being O(2n) when they could just get it in O(n) with find method/function -Luis
 	}
 };
-/**
-function A*(start,goal)
-    closedset := the empty set    // The set of nodes already evaluated.
-    openset := {start}    // The set of tentative nodes to be evaluated, initially containing the start node
-    came_from := the empty map    // The map of navigated nodes.
- 
-    g_score[start] := 0    // Cost from start along best known path.
-    // Estimated total cost from start to goal through y.
-    f_score[start] := g_score[start] + heuristic_cost_estimate(start, goal)
- 
-    while openset is not empty
-        current := the node in openset having the lowest f_score[] value
-        if current = goal
-            return reconstruct_path(came_from, goal)
- 
-        remove current from openset
-        add current to closedset
-        for each neighbor in neighbor_nodes(current)
-            if neighbor in closedset
-                continue
-            tentative_g_score := g_score[current] + dist_between(current,neighbor)
- 
-            if neighbor not in openset or tentative_g_score < g_score[neighbor] 
-                came_from[neighbor] := current
-                g_score[neighbor] := tentative_g_score
-                f_score[neighbor] := g_score[neighbor] + heuristic_cost_estimate(neighbor, goal)
-                if neighbor not in openset
-                    add neighbor to openset
- 
-    return failure
- 
-function reconstruct_path(came_from, current_node)
-    if current_node in came_from
-        p := reconstruct_path(came_from, came_from[current_node])
-        return (p + current_node)
-    else
-        return current_node
-//---------//
-
-    Let P be the starting point
-    Assign g, h, and f values to P
-    Add P to the open list (at this point P is the only node on that list).
-    Let B be the best node from the Open list (best == lowest f value)
-        If B is the goal node -> quit, you found the path
-        If the Open list is empty -> quit, no path exists
-    Let C be a valid node connected to B
-        Assign g, h, and f to C
-        Check if C is on the Open or Closed List
-            If yes, check whether new path is most efficient (lower f-value)
-                If so, update the path
-            Else add C to the Open List
-        Repeat step 5 for all nodes connected to B
-    Add B to the Closed list (we explored all neighbors)
-    Repeat from step 4.
-
-*/
