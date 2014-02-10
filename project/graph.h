@@ -38,6 +38,15 @@ public:
 		bool operator<(const Vertex & b){
 			return h > b.h;
 		}
+
+		vector<weightedGraph::Vertex*> getNeighbors(){
+			vector<weightedGraph::Vertex*> p;
+			for each(Edge * e in adjList)
+			{
+				p.push_back(e->getEnd(locationName));
+			}
+			return p;
+		}
     };
 
     class Edge
@@ -56,6 +65,14 @@ public:
 			distance = distance2;
 			roadQuality = roadQuality2;
 			riskLevel = riskLevel2;
+		}
+
+		Vertex* getEnd(string a){
+			if(a==start->locationName){
+				return end;
+			} else if(a==end->locationName)
+				return start;
+			return NULL;
 		}
     };
 

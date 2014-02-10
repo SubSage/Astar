@@ -6,8 +6,8 @@
 #include "graph.h"
 using namespace std;
 
-void parseInput(ifstream& inputFile, string action);
-void buildNode(string name, double distance);
+void parseInput(ifstream& inputFile, string action, weightedGraph& graph);
+void buildNode(string name, double distance, weightedGraph& graph);
 
 int main()
 {
@@ -20,7 +20,7 @@ int main()
     parseInput(inputFile, d, graph);
     d = "buildEdges";  // Input used to build Edges
     parseInput(inputFile, d, graph);
-    
+    system("pause");
     return 0;
 }
 
@@ -28,7 +28,7 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 {
     string data;
     string name;
-    double value;
+    double value=0;
     vector<string> lineParts;
     string constructedLine;
     
@@ -42,16 +42,16 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 	    constructedLine = "";
 	    for (int i = 0; i < data.size(); i++)
 	    {
-		if (data[i] != '-')
-		    constructedLine += data[i];
-		else
-		{
-		    if (constructedLine != "")
-		    {
-			lineParts.push_back(constructedLine);
-			constructedLine = "";
-		    }
-		}
+			if (data[i] != '-')
+				constructedLine += data[i];
+			else
+			{
+				if (constructedLine != "")
+				{
+					lineParts.push_back(constructedLine);
+					constructedLine = "";
+				}
+			}
 	    }
 	    lineParts.push_back(constructedLine); // Adds distance value from Table 1
 	    
@@ -69,48 +69,47 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
     // between the created Nodes
     if (dataAction == "buildEdges")
     {
-	inputFile.open("point_to_point.txt");
+		inputFile.open("point_to_point.txt");
 
-	// ******* Parse code for build WORK IN PROGRESS *******
-	while ( getline(inputFile, data) )
-	{
-
-            // See if line contains a : to extract start node name, otherwise check next condition
-	    if ( data.find(':') != string::npos )
-	    {
-		constructedLine = "";
-		for (int i = 0; i < data.size(); i++)
+		// ******* Parse code for build WORK IN PROGRESS *******
+		while ( getline(inputFile, data) )
 		{
-		    // Get name, take away the colon
-		    
-		}
 
-		// DEBUG
-		cout << "Found :" << endl;
-	    }	
-	    // See if line contains a - to see if it's a node path
-	    else if ( data.find('-') != string::npos )
-	    {
-		constructedLine = "";
-		for (int i = 0; i < data.size(); i++)
-		{
+				// See if line contains a : to extract start node name, otherwise check next condition
+			if ( data.find(':') != string::npos )
+			{
+				constructedLine = "";
+			for (int i = 0; i < data.size(); i++)
+			{
+				// Get name, take away the colon
 		    
-		    
-		}
+			}
 
-		// DEBUG
-		cout << "Found -" << endl;
-	    }
+			// DEBUG
+			cout << "Found :" << endl;
+			}	
+			// See if line contains a - to see if it's a node path
+			else if ( data.find('-') != string::npos )
+			{
+				constructedLine = "";
+				for (int i = 0; i < data.size(); i++)
+				{
+		    
+		    
+				}
+
+				// DEBUG
+				cout << "Found -" << endl;
+				}
 	    
-	    // Line is blank
-	    else
-	    {
-		// DEBUG
-		cout << "Found blank line" << endl;
+				// Line is blank
+				else
+				{// DEBUG
+				cout << "Found blank line" << endl;
 
-		continue;		
-	    }
-	}
+				continue;		
+				}
+		}
     }      
 	
     // DEBUG
