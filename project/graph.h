@@ -1,105 +1,88 @@
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include <iostream>
-#include <string>
 #include <list>
+#include <string>
 using namespace std;
 
 class weightedGraph
 {
-protected:
-	//because this is c++....
-	class vertex;
-	class edge;
 
-	class vertex
+    class Vertex;
+    class Edge;
+
+    class Vertex
+    {
+    public:
+	string locationName;
+	double g;
+	double h;
+	double f;
+	list<Edge*> adjList;
+
+	Vertex(string name, double h)
 	{
-	public:
-		//in general, could be anything
-		string data;
-		list<edge*> adjacencyList;
-
-		vertex(string a)
-		{
-			data = a;
-		}
-	};
-
-	class edge
-	{
-	public:
-		vertex* start;
-		vertex* end;
-		double weight;
-
-		edge(vertex* s, vertex* e, double w)
-		{
-			start=s;
-			end=e;
-			weight=w;
-		}
-	};
-
-
-	list<vertex*> vertexList;
-	
-	vertex* findVertex(string a)
-	{
-		for each( vertex* v in vertexList )
-		{
-			if( v->data == a )
-				return v;
-		}
-		return NULL;
+	    locationName = name;
+	    this.h = h;
 	}
+    };
 
-	//return true if there is an edge from u to v
-	//, false otherwise
-	bool existsEdge(vertex* u, vertex* v)
+    class Edge
+    {
+    public:
+	Vertex* start;
+	Vertex* end;
+	double distance;
+	double roadQuality;
+	double riskLevel;
+
+	Edge(Vertex* u, Vertex* v, double distance, double roadQuality, double riskLevel)
 	{
-		for each(edge* x in u->adjacencyList)
-		{
-			if( v == x->end )
-				return true;
-		}
-		return false;
+	    start = u;
+	    end = v;
+	    this.distance = distance;
+	    this.roadQuality = roadQuality;
+	    this.riskLevel = riskLevel;
 	}
+    };
 
+    list<Vertex*> vertexList;
+
+    Vertex * findVertex(string name)
+    {
+	for each(Vertex * v in vertexList)
+	{
+	    if (v->locationName == name)
+		return v;
+	}
+	return NULL;
+    }
+    
 public:
-	weightedGraph()
-	{
-	}
+    weightedGraph()
+    {
+	
+    }
 
-	//add vertex with data a to graph
-	void addVertex(string a)
-	{
-		vertexList.push_back( new vertex(a) );
-	}
+    void addVertex(string name, double h)
+    {
+	vertexList.push_back( new Vertex(name, h) );
+    }
 
-	//add edge going from a to b in the graph
-	void addWeightedEdge(string a, string b, double w)
-	{
-		vertex* vertA = findVertex(a);
-		vertex* vertB = findVertex(b);
+    void addEdge(string a, string b, double distance, double roadQuality, double riskLevel)
+    {
+	Vertex* vertA = findVertex(a);
+	Vertex* vertB = findVertex(b);
 
-		if( vertA != NULL && vertB != NULL )
-			vertA->adjacencyList.push_back( new edge(vertA,vertB,w) );
-	}
-
-	//add an edge with weight 1
-	void addEdge(string a, string b)
-	{
-		addWeightedEdge(a,b,1);
-	}
-
-	//return edge (pointer) from a to b,
-	//return NULL if no edge exists
-	edge* getEdge(vertex* a, vertex* b)
-	{
-		for each(edge* e in a->adjacencyList)
-		{
-			if( e->end == b )
-				return e;
-		}
-		return NULL;
-	}
+	// Create edge
+	Edge* path = new Edge(vertA, vertB, distance, roadQuality, riskLevel);
+	
+	// Add bidirectional edge between the vertA and vertB
+	vertA->adjList.push_back(path);
+	vertB->adjList.push_back(path);
+    }
 
 };
+
+#endif
