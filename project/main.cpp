@@ -3,8 +3,7 @@
 #include <vector>
 #include <string>
 #include <stdlib.h>
-#include <graph.h>
-
+#include "graph.h"
 using namespace std;
 
 void parseInput(ifstream& inputFile, string action);
@@ -13,14 +12,14 @@ void buildNode(string name, double distance);
 int main()
 {
     ifstream inputFile;
-    string dataAction;  // Determines what is done with the data
+    string d;  // Determines what is done with the data
     
     weightedGraph graph;
     
-    dataAction = "buildNodes";  // Input used to build Nodes
-    parseInput(inputFile, dataAction, graph);
-    dataAction = "buildEdges";  // Input used to build Edges
-    parseInput(inputFile, dataAction, graph);
+    d = "buildNodes";  // Input used to build Nodes
+    parseInput(inputFile, d, graph);
+    d = "buildEdges";  // Input used to build Edges
+    parseInput(inputFile, d, graph);
     
     return 0;
 }
