@@ -23,9 +23,11 @@ int main()
     d = "buildEdges";  // Input used to build Edges
     parseInput(inputFile, d, graph);
 
+    graph.printVertexesAndAdjEdges();
+
     // Use Astar
-    astar algo;
-    algo.findPath(graph, "Blue Mountains", "Iron Hills");
+    //astar algo;
+    //algo.findPath(graph, "Blue Mountains", "Iron Hills");
 
     //system("pause");
     return 0;
@@ -89,7 +91,6 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 	
 	inputFile.open("point_to_point.txt");
 	
-	// ******* Parse code for build WORK IN PROGRESS *******
 	while ( getline(inputFile, data) )
 	{	    
 	    lineParts.clear();
@@ -108,9 +109,6 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 		    // Get name
 		    constructedLine += data[i];
 		}
-		
-		// DEBUG
-		cout << "Found " + constructedLine + ":" << endl;
 
 		// Add word to locationOneName
 		locationOneName = constructedLine;
@@ -141,23 +139,14 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 		pathDistance = atof(lineParts[1].c_str());
 		pathRoadQuality = atof(lineParts[2].c_str());
 		pathRiskLevel = atof(lineParts[3].c_str());
-		
-
 
 		// Build edge
 		buildEdge(locationOneName, locationTwoName, pathDistance, pathRoadQuality, pathRiskLevel, graph);
-
-		// DEBUG
-		cout << "Start Loc: \'" << locationOneName << "\' Path Dest: \'" << locationTwoName << "\' Dist: " << pathDistance
-		     << " RQual: " << pathRoadQuality << " RiskLvl: " << pathRiskLevel << endl;
 	    }
 	    
 	    // Line is blank
 	    else
 	    {
-		// DEBUG
-		cout << endl;
-		
 		continue;		
 	    }
 	}

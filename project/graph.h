@@ -26,10 +26,10 @@ public:
 		
 	Vertex()
 	{
-	    g=0;
-	    h=0;
-	    f=0;
-	    locationName="";
+	    g = 0;
+	    h = 0;
+	    f = 0;
+	    locationName = "";
 		
 	}
 	Vertex(string name, double h2)
@@ -58,6 +58,16 @@ public:
 	    }
 	    return p;
 	}
+
+	// DEBUG PRINT EDGES
+	void printVectorEdges()
+	{
+	    for(list<Edge*>::iterator it = adjList.begin(); it != adjList.end(); it++)
+	    {
+		cout << "Start: \'" << (*it)->start->locationName << "\' End: \'" << (*it)->end->locationName << "\' Dist: " << (*it)->distance
+		     << " RQual: " << (*it)->roadQuality << " RiskLvl: " << (*it)->riskLevel << endl;
+	    }
+	}
     };
 
     class Edge
@@ -76,6 +86,10 @@ public:
 	    distance = distance2;
 	    roadQuality = roadQuality2;
 	    riskLevel = riskLevel2;
+
+	    // DEBUG PRINT EDGE
+	    //cout << "Start Loc: \'" << start->locationName << "\' Path Dest: \'" << end->locationName << "\' Dist: " << distance2
+	    //	 << " RQual: " << roadQuality << " RiskLvl: " << riskLevel << endl;
 	}
 
 	Vertex* getEnd(string a)
@@ -88,9 +102,21 @@ public:
 		return start;
 	    return NULL;
 	}
+	
     };
 
     list<Vertex*> vertexList;
+
+    // DEBUG: Print Vertexes and their adjacent edges
+    void printVertexesAndAdjEdges()
+    {
+	for (list<Vertex*>::iterator it = vertexList.begin(); it != vertexList.end(); it++)
+	{
+	    cout << "Location Name: \'" << (*it)->locationName << "\'"<< endl;
+	    (*it)->printVectorEdges();
+	    cout << endl;
+	}
+    }
 
     Vertex * findVertex(string name)
     {
@@ -122,6 +148,9 @@ public:
 	// Add bidirectional edge between the vertA and vertB
 	vertA->adjList.push_back(path);
 	vertB->adjList.push_back(path);
+
+	// DEBUG prints edge
+	
     }
 
 };
