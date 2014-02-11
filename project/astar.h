@@ -24,53 +24,65 @@ public:
 	return x;
     }
 
-    vector<weightedGraph::Vertex*> findPath(weightedGraph graph, string start, string end){
+    vector<weightedGraph::Vertex*> findPath(weightedGraph& graph, string start, string end)
+    {
 	set<weightedGraph::Vertex*> closedSet;
 	set<weightedGraph::Vertex*> openSet;
 	openSet.insert(graph.findVertex(start));
 
+	// DEBUG
+	cout << "IN FINDPATH FUNCTION" << endl;
 
 	while(!openSet.empty()){
 			
 	    weightedGraph::Vertex* current;
 	    current = getSmallestFScoreVertex(openSet);
 
-	    if(current->locationName==end)
+	    if(current->locationName == end)
 		return finishUp(current);
 
 	    openSet.erase(current);
 	    closedSet.insert(current);
+	    
+	    // DEBUG
+	    cout << "NOW HERE" << endl;
+
+	    vector<weightedGraph::Vertex*> neighbors = current->getNeighbors();
 			
-			
-	    // FIX FOR STATEMENT STRUCTURE!!!!!
-	    for (weightedGraph::Vertex* v in current->getNeighbors()){
-		    if(closedSet.count(v)!=0){
+	    for (vector<weightedGraph::Vertex*>::iterator it = neighbors.begin(); it != neighbors.end(); it++){
+		    if(closedSet.count(*it) != 0)
+		    {
 			continue;
 		    }
-		    float temp=current->g + v->h;
+		    double temp = current->g + (*it)->h;
 
-		    if(openSet.count(v)==0 || temp < v->g){
-			v->parent=current;
-			v->g=temp;
-			v->f=v->h+v->g;
+		    if(openSet.count(*it)==0 || temp < (*it)->g)
+		    {
+			(*it)->parent = current;
+			(*it)->g = temp;
+			(*it)->f = (*it)->h + (*it)->g;
 
-			if(openSet.count(v)==0){
-			    openSet.insert(v);
+			if(openSet.count(*it) == 0)
+			{
+			    openSet.insert(*it);
 			}
 		    }
 		}
-	    cout<<"no path";
-	    return;
+	    cout << "no path" << endl;
+	    //return NULL;
 	}
     }
 
     //Given a vertex with each parent pointing up, returns vector with full path from start to goal
-    vector<weightedGraph::Vertex*> finishUp(weightedGraph::Vertex* s){
+    vector<weightedGraph::Vertex*> finishUp(weightedGraph::Vertex* s)
+    {
 	vector<weightedGraph::Vertex*> pp;
-	while(s->parent!=NULL){
+	while( s->parent != NULL)
+	{
 	    pp.push_back(s);
 	    s=s->parent;
 	}
+
 	pp.push_back(s);
 	return pp;
 	//Rant....c++ seems dumb sometimes, why wasn't I able to insert s to p? I just don't get it...maybe I do.
