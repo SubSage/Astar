@@ -57,7 +57,7 @@ Carrock---------80------0-------7
 Caradhras:
 Carrock---------70------0-------7
 Gladden Fields--150-----2-------6
-Lothorien-------300-----3-------5.5
+Lothlorien-------300-----3-------5.5
 
 Moria:
 Gladden Fields--140-----2-------9.5
