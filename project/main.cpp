@@ -4,10 +4,12 @@
 #include <string>
 #include <stdlib.h>
 #include "graph.h"
+#include "astar.h"
 using namespace std;
 
 void parseInput(ifstream& inputFile, string action, weightedGraph& graph);
 void buildNode(string name, double distance, weightedGraph& graph);
+void buildEdge(string loc1, string loc2, double dist, double roadQlty, double riskLvl, weightedGraph& graph);
 
 int main()
 {
@@ -20,18 +22,19 @@ int main()
     parseInput(inputFile, d, graph);
     d = "buildEdges";  // Input used to build Edges
     parseInput(inputFile, d, graph);
-    system("pause");
+
+    // Use Astar
+    astar algo;
+    algo.findPath(graph, "Blue Mountains", "Iron Hills");
+
+    //system("pause");
     return 0;
 }
 
 void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 {
     string data;
-    string name;
-    double value = 0;
-    vector<string> lineParts;
-    string constructedLine;
-    
+        
     // Loads Table 1 file to build nodes with data
     if (dataAction == "buildNodes")
     {
@@ -65,9 +68,11 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 	    
 	    // Build nodes here
 	    buildNode(name, value, graph);
-	}	
-	
-	
+	     // DEBUG
+	    cout << "Name: \"" << name << "\" Value: " << value << endl;
+
+	    lineParts.clear();
+	}		
     }
     
     // Loads Table 2 file with point to point information (Edges) and build edges.
@@ -86,13 +91,15 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 	
 	// ******* Parse code for build WORK IN PROGRESS *******
 	while ( getline(inputFile, data) )
-	{
-	    
+	{	    
+	    lineParts.clear();
+
 	    // See if line contains a : to extract start node name, otherwise check next condition
 	    if ( data.find(':') != string::npos )
 	    {
 		int pos;  // Store position of colon
 		
+		locationOneName = "";
 		constructedLine = "";
 		
 		// Subtract 1 from data.size() to exclude colon
@@ -103,39 +110,68 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 		}
 		
 		// DEBUG
-		cout << "Found :" << endl;
+		cout << "Found " + constructedLine + ":" << endl;
+
+		// Add word to locationOneName
+		locationOneName = constructedLine;
 	    }	
 	    // See if line contains a - to see if it's a node path
 	    else if ( data.find('-') != string::npos )
 	    {
+		lineParts.clear();
 		constructedLine = "";
+
 		for (int i = 0; i < data.size(); i++)
 		{
-		       
+		    if (data[i] != '-')
+		    {
+			constructedLine += data[i];
+		    }
+		    else if (constructedLine != "")
+		    {
+			// Push in constructed substrings that are not '-' in lineParts
+			lineParts.push_back(constructedLine);
+			constructedLine = "";
+		    }
 		}
+		// Push in last substring since no '-' exists after Risk Level value
+		lineParts.push_back(constructedLine);
+
+		locationTwoName = lineParts[0];
+		pathDistance = atof(lineParts[1].c_str());
+		pathRoadQuality = atof(lineParts[2].c_str());
+		pathRiskLevel = atof(lineParts[3].c_str());
 		
+
+
+		// Build edge
+		buildEdge(locationOneName, locationTwoName, pathDistance, pathRoadQuality, pathRiskLevel, graph);
+
 		// DEBUG
-		cout << "Found -" << endl;
+		cout << "Start Loc: \'" << locationOneName << "\' Path Dest: \'" << locationTwoName << "\' Dist: " << pathDistance
+		     << " RQual: " << pathRoadQuality << " RiskLvl: " << pathRiskLevel << endl;
 	    }
 	    
 	    // Line is blank
 	    else
-	    {// DEBUG
-		cout << "Found blank line" << endl;
+	    {
+		// DEBUG
+		cout << endl;
 		
 		continue;		
 	    }
 	}
     }      
     
-    // DEBUG
-    cout << "Name: \"" << name << "\" Value: " << value << endl;
-    
-    lineParts.clear();
     inputFile.close();
 }
 
 void buildNode(string name, double distance, weightedGraph& graph)
 {
     graph.addVertex(name, distance);
+}
+
+void buildEdge(string location1, string location2, double distance, double roadQuality, double riskLevel, weightedGraph& graph)
+{
+    graph.addEdge(location1, location2, distance, roadQuality, riskLevel);
 }
