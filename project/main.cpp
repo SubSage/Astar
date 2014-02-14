@@ -17,19 +17,30 @@ int main()
     string d;  // Determines what is done with the data
     
     weightedGraph graph;
+    vector<weightedGraph::Vertex*> path;
     
     d = "buildNodes";  // Input used to build Nodes
     parseInput(inputFile, d, graph);
     d = "buildEdges";  // Input used to build Edges
     parseInput(inputFile, d, graph);
 
-    graph.printVertexesAndAdjEdges();
+    //graph.printVertexesAndAdjEdges();
 
     // Use Astar
-    //astar algo;
-    //algo.findPath(graph, "Blue Mountains", "Iron Hills");
+    astar algo;
+    path = algo.findPath(graph, "Blue Mountains", "Iron Hills");
+    
+    // Print Path
+    cout << "=== Path ===" << endl;
+    for (vector<weightedGraph::Vertex*>::reverse_iterator it = path.rbegin(); it != path.rend(); it++)
+    {
+	cout << (*it)->locationName;
+	if ( !((*it)->locationName == "Iron Hills") )
+	    cout << " -> ";
+	else
+	    cout << endl;
+    }
 
-    //system("pause");
     return 0;
 }
 
@@ -70,8 +81,7 @@ void parseInput(ifstream& inputFile, string dataAction, weightedGraph& graph)
 	    
 	    // Build nodes here
 	    buildNode(name, value, graph);
-	     // DEBUG
-	    cout << "Name: \"" << name << "\" Value: " << value << endl;
+	    
 
 	    lineParts.clear();
 	}		

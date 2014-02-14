@@ -30,7 +30,7 @@ public:
 	    h = 0;
 	    f = 0;
 	    locationName = "";
-		
+	    parent = NULL;
 	}
 	Vertex(string name, double h2)
 	{
@@ -57,6 +57,17 @@ public:
                 
 	    }
 	    return p;
+	}
+
+	// Get distance between this vertex and end vertex
+	double getDistanceTo(Vertex* destination)
+	{
+	    for(list<Edge*>::iterator it = adjList.begin(); it != adjList.end(); it++)
+	    {
+		if ( (*it)->end == destination )
+		    return (*it)->distance;
+	    }
+	    return -1; // Distance never found
 	}
 
 	// DEBUG PRINT EDGES
@@ -92,6 +103,8 @@ public:
 	    //	 << " RQual: " << roadQuality << " RiskLvl: " << riskLevel << endl;
 	}
 
+	// NOT USED FOR NOW
+	/*
 	Vertex* getEnd(string a)
 	{
 	    if(a == start->locationName)
@@ -102,6 +115,8 @@ public:
 		return start;
 	    return NULL;
 	}
+	*/
+	
 	
     };
 
