@@ -84,7 +84,7 @@ public:
 			continue;
 
 		    // Current g-score + dist_between(current, neighbor)
-		    double tentativeG = current->g + current->getDistanceTo(*neighbor);
+		    double tentativeG = current->g + current->getRoadValue(*neighbor);
 		    
 		    if(openSet.count(*neighbor) == 0 || tentativeG < (*neighbor)->g)
 		    {

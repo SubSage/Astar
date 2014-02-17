@@ -60,12 +60,13 @@ public:
 	}
 
 	// Get distance between this vertex and end vertex
-	double getDistanceTo(Vertex* destination)
+	double getRoadValue(Vertex* destination)
 	{
 	    for(list<Edge*>::iterator it = adjList.begin(); it != adjList.end(); it++)
 	    {
 		if ( (*it)->end == destination )
-		    return (*it)->distance;
+		    return (*it)->distance / 10 * (*it)->roadQuality * (*it)->riskLevel * (*it)->riskLevel;
+		// Distance itself not too much a factor, quality is standard, risk is very important.
 	    }
 	    return -1; // Distance never found
 	}
